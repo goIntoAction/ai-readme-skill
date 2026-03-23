@@ -11,9 +11,9 @@ Generate documentation skeleton for AI-assisted development.
 
 1. **Runs Python script** to scan project structure
 2. **Creates 11 document skeletons** in `.ai-readme/`
-3. **AI fills technical content** in `generated/` (9 files)
-4. **AI scans and creates frameworks** in `manual/` (2 files) for humans to refine
-5. **AI generates task index** and appends to `AGENT.md`
+3. **AI evaluates which documents are relevant** and fills them
+4. **AI generates task index** and appends to `AGENT.md`
+5. **AI scans and creates frameworks** in `manual/` (2 files) for humans to refine
 
 ## Command
 
@@ -50,13 +50,20 @@ This creates:
     └── 历史经验.md       # AI scans comments/git → human confirms
 ```
 
-### Step 2: Fill Technical Content (AI Task)
+### Step 2: Evaluate Document Relevance and Fill Content
 
-Read `generated/*.md` files and fill technical content by analyzing code.
+Read `generated/*.md` files, then evaluate each one:
+
+**判断方式**：
+- 扫描完项目后，针对每个文档自问：本项目是否有与这个文档主题相关的内容？
+- **有** → 正常填充
+- **完全没有** → 在文档开头写一行 `本项目无 [主题相关内容]，跳过`，不做全文填充
+
+**不依赖文件类型列表判断**，AI 扫描项目后自然知道该项目有什么、没有什么。
 
 ### Step 3: Generate Task Index (AI Auto-generates)
 
-After filling all `generated/` content, **proactively** scan the actual filled content and append a task index table to the end of `AGENT.md`. Format:
+After filling all relevant `generated/` content, **proactively** scan the actual filled content and append a task index table to the end of `AGENT.md`. Format:
 
 ```markdown
 ## 按任务查文档
