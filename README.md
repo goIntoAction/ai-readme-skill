@@ -1,22 +1,33 @@
 # ai-readme
 
-AI-friendly project documentation generator. Generates a documentation skeleton that AI can fill by scanning project code.
+AI-friendly project documentation generator. Point your AI agent to this skill, and it will scan your project and generate a full documentation set.
 
 ## What It Does
 
-1. **Script** scans project structure and generates 11 document skeletons in `.ai-readme/`
-2. **AI** fills technical content by analyzing source code
-3. **AI** generates a task index table for quick navigation
-4. **AI** scans code comments and git history to build experience documentation for humans to refine
+1. **Scans** project structure and generates 11 document skeletons
+2. **AI fills** technical content by analyzing source code
+3. **AI generates** a task index table for quick navigation
+4. **AI scans** code comments and git history to build experience documentation for humans to refine
 
-## Usage
+## How to Use
 
-```bash
-# Generate documentation skeleton
-python scripts/generate.py --root /path/to/project --output .ai-readme
+In Claude (or any AI agent that supports skills), reference this skill:
 
-# Then let AI fill the content following SKILL.md instructions
 ```
+@ai-readme
+```
+
+Then run:
+
+```
+/ai-readme generate
+```
+
+The AI will:
+1. Run the generation script to create document skeletons
+2. Fill all `generated/` documents with technical content from code analysis
+3. Generate a task index table and append it to `AGENT.md`
+4. Build frameworks in `manual/` for human refinement
 
 ## Generated Structure
 
@@ -40,11 +51,23 @@ python scripts/generate.py --root /path/to/project --output .ai-readme
 
 ## Key Features
 
-- **Auto-adaptive**: AI determines which documents are relevant based on actual project scan — no manual filtering needed
-- **Code-grounded**: 核心流程.md requires real code locations (file + line numbers)
-- **Anti-Patterns**: 历史经验.md includes a dedicated section for recording what NOT to do
+- **Auto-adaptive**: AI determines which documents are relevant based on actual project scan — works for frontend, backend, mobile, or any language/framework
+- **Code-grounded**: 核心流程.md requires real code locations (file + line numbers), not vague descriptions
+- **Anti-Patterns**: 历史经验.md includes a dedicated section for recording what NOT to do, sourced from code comments
 - **Task Index**: AGENT.md includes a task-based navigation table generated from actual filled content
 
-## Skill Installation
+## Quality Standards
 
-Point your AI agent to this directory. The SKILL.md defines the full workflow and quality standards.
+The skill enforces two hard rules:
+1. Every key function in 核心流程.md must include real file path + line number
+2. 历史经验.md must include Anti-Patterns — what NOT to do is often more valuable than bug records
+
+## Manual vs Generated
+
+**Generated (AI fills completely):**
+- Project structure, architecture, data models, API definitions, error handling
+
+**Manual (AI builds framework, humans fill):**
+- Business rules and values
+- Team lessons learned (AI provides candidates, humans confirm)
+- Anti-patterns (AI scans, humans confirm)
