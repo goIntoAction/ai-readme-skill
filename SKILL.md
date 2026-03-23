@@ -135,6 +135,10 @@ Document generation complete. Technical docs filled, task index generated, manua
 - Guess at domain semantics
 - Generate task index rows with "待填充" or placeholder content
 - Write code locations that don't actually exist in the codebase
+- 改变文档的章节结构（骨架文件的 ## 标题顺序不能打乱）
+- 跳过任何空模板段落不填充
+- 自己发挥写文档里没有提到的主题
+- 写到"待填充"就停下来，必须填完所有章节
 
 ---
 
