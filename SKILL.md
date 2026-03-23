@@ -13,6 +13,7 @@ Generate documentation skeleton for AI-assisted development.
 2. **Creates 11 document skeletons** in `.ai-readme/`
 3. **AI fills technical content** in `generated/` (9 files)
 4. **AI scans and creates frameworks** in `manual/` (2 files) for humans to refine
+5. **AI generates task index** and appends to `AGENT.md`
 
 ## Command
 
@@ -27,7 +28,7 @@ Generate documentation skeleton for AI-assisted development.
 Execute the Python script to create document skeletons:
 
 ```bash
-python /Users/zengye/code/ai/ai_readme/skills/ai-readme/scripts/generate.py --root . --output .ai-readme
+python /Users/zengye/code/ai_readme-skill/scripts/generate.py --root . --output .ai-readme
 ```
 
 This creates:
@@ -53,7 +54,31 @@ This creates:
 
 Read `generated/*.md` files and fill technical content by analyzing code.
 
-### Step 3: Scan and Create Manual Frameworks (AI Task)
+### Step 3: Generate Task Index (AI Auto-generates)
+
+After filling all `generated/` content, **proactively** scan the actual filled content and append a task index table to the end of `AGENT.md`. Format:
+
+```markdown
+## 按任务查文档
+
+| 任务场景 | 相关文档 | 关键代码位置 |
+|---------|---------|------------|
+| 改订单创建逻辑 | 核心流程.md | OrderServiceImpl.submit() @ OrderServiceImpl.java:91 |
+| 改商品库存逻辑 | 核心流程.md | SkuStockService.lock() @ SkuStockLockServiceImpl.java |
+| 改登录认证逻辑 | 核心流程.md | AuthAccountServiceImpl @ AuthAccountServiceImpl.java:40 |
+| 查分布式事务配置 | 技术架构.md | — |
+| 改接口定义 | 接口约定.md, 接口示例.md | 对应 Feign Client 或 Controller |
+| 改数据模型 | 数据模型.md | 对应 Entity/Model |
+| 查错误码 | 错误处理.md | ResponseEnum 定义位置 |
+| ... | ... | ... |
+```
+
+**生成规则**：
+- 每个有实际内容的文档至少生成 1 行
+- 代码位置精确到文件名和方法名，不要只写文件路径
+- 不要写"待填充"，只写实际填充后的真实内容
+
+### Step 4: Scan and Create Manual Frameworks (AI Task)
 
 For `manual/` files, AI should:
 
@@ -64,27 +89,47 @@ For `manual/` files, AI should:
 - Humans fill specific business values
 
 **历史经验.md:**
-- **Option 1 - Code Comments:** Search for `FIXME`, `TODO`, `HACK`, `WORKAROUND`, `踩坑`, `历史债`
+- **Option 1 - Code Comments:** Search for `FIXME`, `TODO`, `HACK`, `WORKAROUND`, `踩坑`, `历史债`, `临时方案`, `兼容老版本`
 - **Option 2 - Git Commits:** Run `git log --all --oneline --grep="fix\|bug\|修复\|解决" -n 30`
 - Create candidate lists for human review
 - Humans confirm and organize into final experiences
+- **Anti-Patterns**: Also scan for `// 不要用`, `// 严禁`, `// 不能这样写`, `// 禁止` 等反模式注释，记录"不该怎么做"
 
-### Step 4: Done
+### Step 5: Done
 
-Document generation complete. Technical docs filled, manual frameworks created for human refinement.
+Document generation complete. Technical docs filled, task index generated, manual frameworks created for human refinement.
 
-## Important Rules
+---
+
+## Quality Standards
 
 **AI SHOULD:**
 - Fill `generated/*.md` with technical content from code analysis
 - Scan code to identify business modules for `manual/业务知识.md` framework
 - Search comments/git for potential issues for `manual/历史经验.md` candidates
 - Create structured tables and lists for humans to fill
+- Generate task index based on **actual filled content**, not placeholders
+
+**Quality Requirements:**
+
+1. **`核心流程.md` must contain real code locations**
+   - Every key function MUST include: file path + line number range
+   - Example: `OrderServiceImpl.submit() @ OrderServiceImpl.java:91-130`
+   - Sequence diagrams alone are not enough — AI must locate exact code
+
+2. **`历史经验.md` must include Anti-Patterns**
+   - In addition to bug fixes, also record: "what NOT to do"
+   - Scan for comments like `// 不要用这种方式`, `// 严禁`, `// 错误写法`
+   - These anti-patterns are often more valuable than bug records
 
 **AI SHOULD NOT:**
 - Invent business values (timeouts, thresholds) without code evidence
 - Write final "lessons learned" without human confirmation
 - Guess at domain semantics
+- Generate task index rows with "待填充" or placeholder content
+- Write code locations that don't actually exist in the codebase
+
+---
 
 ## Document Types
 
@@ -98,16 +143,17 @@ Document generation complete. Technical docs filled, manual frameworks created f
 **manual/ (AI creates framework, humans fill details):**
 - Business rules and values
 - Team lessons learned (AI provides candidates, humans confirm)
+- Anti-patterns (AI scans, humans confirm)
 
 ## Script Options
 
 ```bash
 # Default - generate in current directory
-python /Users/zengye/code/ai/ai_readme/skills/ai-readme/scripts/generate.py
+python /Users/zengye/code/ai_readme-skill/scripts/generate.py
 
 # Custom project root
-python /Users/zengye/code/ai/ai_readme/skills/ai-readme/scripts/generate.py --root /path/to/project
+python /Users/zengye/code/ai_readme-skill/scripts/generate.py --root /path/to/project
 
 # Preview only
-python /Users/zengye/code/ai/ai_readme/skills/ai-readme/scripts/generate.py --dry-run
+python /Users/zengye/code/ai_readme-skill/scripts/generate.py --dry-run
 ```
