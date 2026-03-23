@@ -11,13 +11,7 @@ AI-friendly project documentation generator. Point your AI agent to this skill, 
 
 ## How to Use
 
-In Claude (or any AI agent that supports skills), reference this skill:
-
-```
-@ai-readme
-```
-
-Then run:
+Run in your AI agent:
 
 ```
 /ai-readme generate
