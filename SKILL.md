@@ -100,7 +100,7 @@ For `manual/` files, AI should:
 - **Option 2 - Git Commits:** Run `git log --all --oneline --grep="fix\|bug\|修复\|解决" -n 30`
 - Create candidate lists for human review
 - Humans confirm and organize into final experiences
-- **Anti-Patterns**: Also scan for `// 不要用`, `// 严禁`, `// 不能这样写`, `// 禁止` 等反模式注释，记录"不该怎么做"
+- **Anti-Patterns**: Also scan for `不要用`、`严禁`、`禁止`、`不能这样写`、`错误写法`、`// HACK`、`// 临时方案`、`// 兼容老版本` 等反模式注释，记录"不该怎么做"。Anti-Patterns 是经验价值最高的章节，**必须认真扫描**，不要留空。
 
 ### Step 5: Done
 
